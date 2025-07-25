@@ -1,5 +1,5 @@
 # Dos-attack
-# 🧪 Powerful HTTP Load Testing Tool
+# 🧪 Powerful HTTPS Load Testing Tool
 
 This is a powerful Python-based HTTPS load testing and DoS simulation tool. It supports multiple modes including **Load Test**, **GoldenEye**, and **Slowloris**, with proxy and debug options for testing flexibility.
 
