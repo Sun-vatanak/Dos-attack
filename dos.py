@@ -1,10 +1,10 @@
-
 import requests
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlparse
 import random
 
+# List of common user agents
 USER_AGENTS = [
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
@@ -20,12 +20,7 @@ def send_request(url, request_timeout=5):
     }
 
     try:
-        response = requests.get(
-            url,
-            headers=headers,
-            timeout=request_timeout,
-            allow_redirects=True
-        )
+        response = requests.get(url, headers=headers, timeout=request_timeout, allow_redirects=True)
         return {
             'status': response.status_code,
             'url': url,
@@ -47,7 +42,7 @@ def print_result(result, current, total):
     else:
         print(f"\033[91m{prefix} ✗ Error: {result['error']}\033[0m | {result['url']}")
 
-def load_test(url, total_requests=100, max_threads=10, request_delay=0.1, request_timeout=5):
+def load_test(url, total_requests=100, max_threads=10, request_timeout=5):
     parsed = urlparse(url)
     if not parsed.scheme or not parsed.netloc:
         print("❌ Error: Invalid URL format. Please include http:// or https://")
@@ -56,7 +51,7 @@ def load_test(url, total_requests=100, max_threads=10, request_delay=0.1, reques
     print(f"\n🚀 Starting load test for: {url}")
     print(f"📨 Total requests: {total_requests}")
     print(f"🔗 Threads: {max_threads}")
-    print(f"⏱️ Delay: {request_delay}s | Timeout: {request_timeout}s")
+    print(f"⏱️ Timeout: {request_timeout}s")
     print("=" * 60)
 
     start_time = time.time()
@@ -64,11 +59,7 @@ def load_test(url, total_requests=100, max_threads=10, request_delay=0.1, reques
     failure_count = 0
 
     with ThreadPoolExecutor(max_workers=max_threads) as executor:
-        futures = []
-        for _ in range(total_requests):
-            future = executor.submit(send_request, url, request_timeout)
-            futures.append(future)
-            time.sleep(request_delay)
+        futures = [executor.submit(send_request, url, request_timeout) for _ in range(total_requests)]
 
         for i, future in enumerate(as_completed(futures), start=1):
             result = future.result()
@@ -91,21 +82,32 @@ def load_test(url, total_requests=100, max_threads=10, request_delay=0.1, reques
 
 if __name__ == "__main__":
     print("🌐 Safe HTTP/HTTPS Load Tester")
-    target_url = input("Enter target URL (e.g. https://test.com/): ").strip()
+    target_url = input("Enter target URL (e.g. https://example.com/): ").strip()
 
     if not target_url.startswith("http://") and not target_url.startswith("https://"):
         print("❌ Error: Invalid URL format. Please include http:// or https://")
     else:
         try:
-            total = int(input("Enter total number of requests: "))
+            total = int(input("Enter total number of requests (default 100): ") or 100)
         except ValueError:
             print("❌ Invalid number. Using default of 100.")
             total = 100
 
+        try:
+            threads = int(input("Enter number of concurrent threads (default 10): ") or 10)
+        except ValueError:
+            print("❌ Invalid thread count. Using default of 10.")
+            threads = 10
+
+        try:
+            timeout = int(input("Enter request timeout in seconds (default 5): ") or 5)
+        except ValueError:
+            print("❌ Invalid timeout. Using default of 5.")
+            timeout = 5
+
         load_test(
             url=target_url,
             total_requests=total,
-            max_threads=5,
-            request_delay=0.1,
-            request_timeout=5
+            max_threads=threads,
+            request_timeout=timeout
         )
