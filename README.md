@@ -28,4 +28,6 @@ source .venv/bin/activate
 # Install required packages
 pip install requests
 pip install aiohttp
-pip install PySocks  # Only if using proxy with Slowloris mode
+pip install pysocks
+pip install PySocks
+ # Only if using proxy Tor  with Slowloris mode
