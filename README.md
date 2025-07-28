@@ -1,7 +1,7 @@
 # Dos-attack
 # 🧪 Powerful HTTPS Load Testing Tool
 
-This is a powerful Python-based HTTPS load testing and DoS simulation tool. It supports multiple modes including **Load Test**, **GoldenEye**, and **Slowloris**, with proxy and debug options for testing flexibility.
+This is a powerful Python-based HTTPS and HTTP load testing and DoS simulation tool. It supports multiple modes including **Load Test**, **GoldenEye**, and **Slowloris**, with proxy and debug options for testing flexibility.
 
 ---
 
@@ -27,4 +27,5 @@ source .venv/bin/activate
 
 # Install required packages
 pip install requests
+pip install aiohttp
 pip install PySocks  # Only if using proxy with Slowloris mode
