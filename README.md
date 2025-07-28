@@ -32,3 +32,5 @@ pip install pysocks
 pip install aiohttp_socks
 pip install PySocks
  # Only if using proxy Tor  with Slowloris mode
+# version test.py
+pip install aiohttp aiohttp_socks pysocks cloudscraper
